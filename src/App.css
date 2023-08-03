@@ -1,3 +1,24 @@
 .App {
   text-align: center;
+  justify-self: center;
+  align-items: center;
+}
+
+.todo-app{
+  justify-content: center;
+  align-self: center;
+}
+
+.todo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+}
+
+.add-todo-container {
+  display: flex;
+  gap: 16px;
+
 }
