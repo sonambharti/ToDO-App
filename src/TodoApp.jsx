@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
+import { useReducer } from 'react';
 import AddTodo from './AddTodo';
 import TodoList from './TodoList';
 import './App.css';
@@ -12,36 +13,57 @@ const initialTodos = [
 //   {id: 3, text: "Learn Node", done: false},
 ];
 
-
-function TodoApp() {
-
-    const [todos, setTodos] = useState(initialTodos);
-    function handleAddTodo(text) {
-        setTodos([
-            ...todos,
-            {
-                id: nextId++,
-                text,
-                done: false,
-            },
-        ]);
-    }
-
-    function handleTodoChange(updatedTodo) {
-        setTodos(
-            todos.map((existingTodo) => {
+function todosReducer(todos, action) {
+    const { type } = action;
+    switch (type) {
+        case "add":
+            const { id, text } = action;
+            return [...todos, {id, text, done: false}];
+        case "change":
+            const updatedTodo = action.todo;
+            return todos.map((existingTodo) => {
                 if (existingTodo.id === updatedTodo.id){
                     return updatedTodo;
                 }else{
                     return existingTodo;
-                }
+                }    
+            })
+        case "remove":
+            const todoId = action.id;
+            return todos.filter((todo) => todo.id !== todoId);
+            
+    }
+}
 
-        }));
+function TodoApp() {
+
+    // const [todos, setTodos] = useState(initialTodos);
+    const [todos, dispatch] = useReducer(todosReducer, initialTodos);
+    
+    function handleAddTodo(text) {
+        dispatch({
+            type: "add",
+            id: nextId++,
+            text,
+        });
+        
+    }
+
+    function handleTodoChange(updatedTodo) {
+        dispatch({
+            type: "change",
+            todo: updatedTodo,
+        });
+        
     }
 
 
     function handleTodoDelete(todoId) {
-        setTodos(todos.filter((todo) => todo.id !== todoId));
+        dispatch({
+            type: "remove",
+            id: todoId,
+        });
+        
     }
 
 
